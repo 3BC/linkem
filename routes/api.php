@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('links', 'Api\LinkController@index');
+Route::post('links', 'Api\LinkController@store');

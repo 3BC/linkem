@@ -23,4 +23,5 @@ class GetLinksTest extends TestCase
 
         $this->assertEquals(5, count($response->json()));
     }
+
 }

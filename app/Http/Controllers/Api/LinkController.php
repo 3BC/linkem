@@ -17,4 +17,17 @@ class LinkController extends Controller
     {
         return Link::all();
     }
+
+    /**
+     * Store a newly created link in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $link = Link::create($request->all());
+
+        return $link;
+    }
 }

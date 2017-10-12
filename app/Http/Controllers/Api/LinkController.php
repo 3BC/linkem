@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Link;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreLink;
 use App\Http\Controllers\Controller;
 
 class LinkController extends Controller
@@ -24,7 +25,7 @@ class LinkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreLink $request)
     {
         $link = Link::create($request->all());
 

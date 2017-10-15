@@ -24,7 +24,7 @@ class CreateRoomTest extends TestCase
         ];
 
         $response = $this
-                    ->actingAs($user)
+                    ->actingAs($user, 'api')
                     ->json('POST', 'api/rooms', $input);
 
         $response->assertStatus(200);
@@ -51,7 +51,7 @@ class CreateRoomTest extends TestCase
         ];
 
         $response = $this
-                    ->actingAs($user)
+                    ->actingAs($user, 'api')
                     ->json('POST', '/api/rooms', $input);
 
         $response->assertStatus(200);
@@ -63,8 +63,6 @@ class CreateRoomTest extends TestCase
     /** @test */
     function user_must_be_logged_in_to_create_a_room()
     {
-        $this->withoutExceptionHandling();
-
         $input = [
             "name" => "Room name",
             "description" => "Some Room Description",
@@ -78,5 +76,28 @@ class CreateRoomTest extends TestCase
         $rooms = Room::all();
 
         $this->assertEquals(0, $rooms->count());
+    }
+
+    /** @test */
+    function room_must_have_a_name()
+    {
+        // $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $input = [
+            "name" => "",
+            "description" => "Some Room Description",
+        ];
+
+        $response = $this
+                    ->actingAs($user, 'api')
+                    ->json('POST', '/api/rooms', $input);
+
+        $response->assertStatus(422);
+
+        $rooms = Room::all();
+        $this->assertEquals(0, $rooms->count());
+        $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 }

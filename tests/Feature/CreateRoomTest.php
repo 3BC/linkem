@@ -102,6 +102,32 @@ class CreateRoomTest extends TestCase
     }
 
     /** @test */
+    function room_must_have_a_unique_name()
+    {
+        // $this->withoutExceptionHandling();
+
+        $room = factory(Room::class)->create([
+            "name" => "Duplicate Name"
+        ]);
+
+        $user = factory(User::class)->create();
+
+        $input = [
+            "name" => "Duplicate Name",
+        ];
+
+        $response = $this
+                    ->actingAs($user, 'api')
+                    ->json('POST', '/api/rooms', $input);
+
+        $response->assertStatus(422);
+
+        $rooms = Room::all();
+        $this->assertEquals(1, $rooms->count());
+        $this->assertArrayHasKey('name', $response->Json()['errors']);
+    }
+
+    /** @test */
     function user_is_added_as_moderator_to_group_they_create()
     {
         $this->withoutExceptionHandling();

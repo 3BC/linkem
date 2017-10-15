@@ -24,6 +24,9 @@ class RoomController extends Controller
         $room->owner()->associate($request->user());
         $room->save();
 
+        $room->moderators()->attach($request->user()->id);
+        $room->followers()->attach($request->user()->id);
+
         return $room;
     }
 }

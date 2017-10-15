@@ -22,6 +22,18 @@ class CreateRoomsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('room_moderators', function (Blueprint $table) {
+            $table->integer('room_id');
+            $table->integer('user_id');
+            $table->primary(['room_id', 'user_id']);
+        });
+
+        Schema::create('room_followers', function (Blueprint $table) {
+            $table->integer('room_id');
+            $table->integer('user_id');
+            $table->primary(['room_id', 'user_id']);
+        });
     }
 
     /**

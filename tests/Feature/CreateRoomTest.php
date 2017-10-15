@@ -100,4 +100,52 @@ class CreateRoomTest extends TestCase
         $this->assertEquals(0, $rooms->count());
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
+
+    /** @test */
+    function user_is_added_as_moderator_to_group_they_create()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $input = [
+            "name" => "Room name",
+            "description" => "Some Room Description",
+        ];
+
+        $response = $this
+                    ->actingAs($user, 'api')
+                    ->json('POST', 'api/rooms', $input);
+
+        $response->assertStatus(200);
+
+        $rooms = Room::all();
+
+        $this->assertEquals(1, $rooms->first()->moderators()->count());
+        $this->assertEquals($user->id, $rooms->first()->moderators()->first()->id);
+    }
+
+    /** @test */
+    function user_is_added_as_follower_to_group_they_create()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $input = [
+            "name" => "Room name",
+            "description" => "Some Room Description",
+        ];
+
+        $response = $this
+                    ->actingAs($user, 'api')
+                    ->json('POST', 'api/rooms', $input);
+
+        $response->assertStatus(200);
+
+        $rooms = Room::all();
+
+        $this->assertEquals(1, $rooms->first()->followers()->count());
+        $this->assertEquals($user->id, $rooms->first()->followers()->first()->id);
+    }
 }

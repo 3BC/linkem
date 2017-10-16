@@ -34,9 +34,9 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       - run:
-        name: Generate Passport Keys
-        command: php artisan passport:keys
+          name: Generate Passport Keys
+          command: php artisan passport:keys
 
       - run:
-        name: Run PHP Unit
-        command: vendor/bin/phpunit
+          name: Run PHP Unit
+          command: vendor/bin/phpunit

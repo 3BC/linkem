@@ -34,6 +34,14 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       - run:
+          name: Copy Env file
+          command: @php -r \"file_exists('.env') || copy('.env.example', '.env');\"
+
+      - run:
+          name: Generate App Key
+          command: php artisan key:generate
+
+      - run:
           name: Generate Passport Keys
           command: php artisan passport:keys
 

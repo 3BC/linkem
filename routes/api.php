@@ -13,10 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::get('links', 'Api\LinkController@index');
 Route::post('links', 'Api\LinkController@store');
 

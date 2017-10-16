@@ -63,7 +63,6 @@ class CreateRoomTest extends TestCase
     /** @test */
     function user_must_be_logged_in_to_create_a_room()
     {
-        $this->withoutExceptionHandling();
         $input = [
             "name" => "Room name",
             "description" => "Some Room Description",

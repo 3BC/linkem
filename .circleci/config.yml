@@ -33,5 +33,10 @@ jobs:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
 
-      # run tests!
-      - run: vendor/bin/phpunit
+      - run:
+        name: Generate Passport Keys
+        command: php artisan passport:keys
+
+      - run:
+        name: Run PHP Unit
+        command: vendor/bin/phpunit

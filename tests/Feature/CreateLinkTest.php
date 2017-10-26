@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Link;
+use App\User;
 use Tests\TestCase;
 use Illuminate\Session\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -10,7 +11,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CreateLinkTest extends TestCase
 {
     use RefreshDatabase;
-
     /** @test */
     public function create_basic_link()
     {

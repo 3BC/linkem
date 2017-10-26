@@ -28,23 +28,19 @@ class LinkController extends Controller
      */
     public function store(StoreLink $request)
     {
-        /*
-        // USER IS IS USED FOR TESTING ONLY.
-        // ONCE WE IMPLMENT OAUTH THE USER ID VAR WILL NOT LONGER BE NEEDED
-        // MAKE SURE TO REWRITE THE USER ID ALLOCATION WHEN OAUTH IS IMPLEMENTED
-        */
-        $user_id = '1';
+        // Get the user ID so we can attach it to the link
+        $user_id = ($request->user()->id) ? $request->user()->id : null;
+
+        // Making sure we have a user ID. If we do not we need to exit.
+        // Link creation should automatically attach to the user trying to create the link.
+        if(!$user_id){return new Response('Unauthorized User', 401);}
+
 
         // Getting the request data
         $link_request = $request->all();
 
-        // Performing a simple check on the url to make sure it is valid
-        // Is this already being done in middleware?
-        if(!filter_var($link_request['url'], FILTER_VALIDATE_URL)){
-          return new Response('Invalid URL', 422);
-        }
 
-        //Perform link check. See if it already exists.
+        // Perform link check. See if it already exists.
         // If the link already exists all we need to do is relate it to the user
         $link = Link::where('url', $request['url'])->first();
 

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('links', 'Api\LinkController@index');
-Route::post('links', 'Api\LinkController@store');
+Route::middleware('auth:api')->post('links', 'Api\LinkController@store');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('rooms', 'Api\RoomController@store');

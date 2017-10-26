@@ -16,13 +16,17 @@ class CreateLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "https://www.example.com",
           "name" => "link name",
           "description" => "some link description"
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(200);
 
@@ -39,13 +43,17 @@ class CreateLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "https://www.example.com",
           "name" => "link name",
           "description" => "some link description"
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(200);
 
@@ -57,13 +65,17 @@ class CreateLinkTest extends TestCase
     /** @test */
     public function create_basic_link_requires_url_param()
     {
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "",
           "name" => "link name",
           "description" => "some link description"
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(422);
 
@@ -77,13 +89,17 @@ class CreateLinkTest extends TestCase
     {
         //$this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "badurl",
           "name" => "link name",
           "description" => "some link description"
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(422);
 
@@ -97,13 +113,17 @@ class CreateLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "https://www.example.com",
           "name" => "",
           "description" => "some link description"
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(200);
 
@@ -120,18 +140,62 @@ class CreateLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
         $input = [
           "url" => "https://www.example.com",
           "name" => "some name",
           "description" => ""
         ];
 
-        $response = $this->json('POST', '/api/links', $input);
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
 
         $response->assertStatus(200);
 
         $links = Link::all();
 
+        $this->assertEquals(1, $links->count());
+        $this->assertEquals($input['url'], $links->first()->url);
+        $this->assertEquals($input['name'], $links->first()->name);
+        $this->assertNull($links->first()->description);
+    }
+
+    /** @test */
+    public function create_basic_link_with_duplicate_url()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $input = [
+          "url" => "https://www.example.com",
+          "name" => "some name",
+          "description" => ""
+        ];
+
+        $response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
+
+        $response->assertStatus(200);
+
+        $duplicate_input = [
+          "url" => "https://www.example.com",
+          "name" => "some name",
+          "description" => ""
+        ];
+
+        $second_response = $this
+        ->actingAs($user, 'api')
+        ->json('POST', '/api/links', $input);
+
+        $second_response->assertStatus(200);
+
+        $links = Link::all();
+
+        // Remember... the links count should still be 1 since it is a duplicate link
         $this->assertEquals(1, $links->count());
         $this->assertEquals($input['url'], $links->first()->url);
         $this->assertEquals($input['name'], $links->first()->name);

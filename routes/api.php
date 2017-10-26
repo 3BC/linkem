@@ -18,4 +18,5 @@ Route::post('links', 'Api\LinkController@store');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('rooms', 'Api\RoomController@store');
+    Route::patch('rooms/{room}', 'Api\RoomController@update');
 });

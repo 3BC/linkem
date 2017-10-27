@@ -31,11 +31,6 @@ class LinkController extends Controller
         // Get the user ID so we can attach it to the link
         $user_id = ($request->user()->id) ? $request->user()->id : null;
 
-        // Making sure we have a user ID. If we do not we need to exit.
-        // Link creation should automatically attach to the user trying to create the link.
-        if(!$user_id){return new Response('Unauthorized User', 401);}
-
-
         // Getting the request data
         $link_request = $request->all();
 

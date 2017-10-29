@@ -18,7 +18,6 @@ class CreateLinksTable extends Migration
             $table->text('url');
             $table->string('name')->nullable();
             $table->text('description')->nullable();
-            $table->string('feed')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

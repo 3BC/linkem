@@ -15,8 +15,10 @@ use Illuminate\Http\Request;
 
 Route::get('links', 'Api\LinkController@index');
 
-
+// Routes Protected by Auth
 Route::middleware('auth:api')->group(function () {
     Route::post('rooms', 'Api\RoomController@store');
+    Route::patch('rooms/{room}', 'Api\RoomController@update');
+
     Route::post('links', 'Api\LinkController@store');
 });

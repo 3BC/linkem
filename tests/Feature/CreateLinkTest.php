@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CreateLinkTest extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
     public function create_basic_link()
     {
@@ -163,7 +164,7 @@ class CreateLinkTest extends TestCase
     }
 
     /** @test */
-    public function create_basic_link_with_duplicate_url()
+    public function link_will_be_associated_with_the_user_who_submitted_it()
     {
         $this->withoutExceptionHandling();
 
@@ -171,8 +172,8 @@ class CreateLinkTest extends TestCase
 
         $input = [
           "url" => "https://www.example.com",
-          "name" => "some name",
-          "description" => ""
+          "name" => "link name",
+          "description" => "some link description"
         ];
 
         $response = $this
@@ -181,24 +182,48 @@ class CreateLinkTest extends TestCase
 
         $response->assertStatus(200);
 
-        $duplicate_input = [
-          "url" => "https://www.example.com",
-          "name" => "some name",
-          "description" => ""
+        $links = Link::with('users')->get();
+
+        $this->assertEquals(1, $links->count());
+        $this->assertEquals(1, $links->first()->users->count());
+        $this->assertEquals($user->id, $links->first()->users->first()->id);
+    }
+
+    /** @test */
+    public function link_with_a_duplicate_url_just_associates_link_to_user_does_not_do_anything_else()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $link = factory(Link::class)->create([
+            "url" => "https://www.sameurl.com",
+            "name" => "orginal name",
+            "description" => "orginal description"
+        ]);
+
+        $link->users()->attach(factory(User::class)->create());
+
+        $input = [
+          "url" => "https://www.sameurl.com",
+          "name" => "changed name",
+          "description" => "changed description"
         ];
 
-        $second_response = $this
+        $response = $this
         ->actingAs($user, 'api')
         ->json('POST', '/api/links', $input);
 
-        $second_response->assertStatus(200);
+        $response->assertStatus(200);
 
-        $links = Link::all();
+        $links = Link::with('users')->get();
 
-        // Remember... the links count should still be 1 since it is a duplicate link
         $this->assertEquals(1, $links->count());
-        $this->assertEquals($input['url'], $links->first()->url);
-        $this->assertEquals($input['name'], $links->first()->name);
-        $this->assertNull($links->first()->description);
+        $this->assertEquals($link->id, $links->first()->id);
+        $this->assertEquals($link->url, $links->first()->url);
+        $this->assertEquals($link->name, $links->first()->name);
+        $this->assertEquals($link->description, $links->first()->description);
+
+        $this->assertEquals(2, $links->first()->users()->count());
     }
 }

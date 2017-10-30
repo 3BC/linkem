@@ -21,6 +21,17 @@ class CreateLinksTable extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::create('link_user', function (Blueprint $table) {
+
+            $table->integer('link_id')->unsigned()->index();
+            $table->foreign('link_id')->references('id')->on('links');
+
+            $table->integer('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -30,6 +41,8 @@ class CreateLinksTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('link_user');
         Schema::dropIfExists('links');
+
     }
 }

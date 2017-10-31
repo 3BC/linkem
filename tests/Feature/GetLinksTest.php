@@ -20,6 +20,7 @@ class GetLinksTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+<<<<<<< HEAD
         $user = factory(User::class)->create();
 
         $link = factory(Link::class, $this->link_count_for_factories)->create();
@@ -38,12 +39,18 @@ class GetLinksTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+=======
+        $u = factory(App\User::class, 25)->create()->each(function ($u){
+          $u->links()->save(factory(App\Link::class)->make());
+        });
+>>>>>>> Link fetch tests started. Making commit before rebasing from 3BC
 
         $response = $this
                 ->actingAs($user, 'api')
                 ->json('GET', '/api/links/all');
 
         $response->assertStatus(200);
+<<<<<<< HEAD
 
         $this->assertEquals(0, count($response->json()));
     }
@@ -85,6 +92,9 @@ class GetLinksTest extends TestCase
 
         $response->assertStatus(404);
 
+=======
+        $this->assertEquals(25, $response);
+>>>>>>> Link fetch tests started. Making commit before rebasing from 3BC
     }
 
 }

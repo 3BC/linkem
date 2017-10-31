@@ -1,9 +1,8 @@
 <?php
 
-//namespace Tests\Feature;
+namespace Tests\Feature;
 
 use App\Link;
-use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,14 +15,13 @@ class GetLinksTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $u = factory(App\User::class, 25)->create()->each(function ($u){
-          $u->links()->save(factory(App\Link::class)->make());
-        });
+        $link = factory(Link::class, 5)->create();
 
         $response = $this->json('GET', '/api/links');
 
         $response->assertStatus(200);
-        $this->assertEquals(25, $response);
+
+        $this->assertEquals(5, count($response->json()));
     }
 
 }

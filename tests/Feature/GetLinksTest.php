@@ -21,7 +21,7 @@ class GetLinksTest extends TestCase
         });
 
         $response = $this->json('GET', '/api/links');
-
+        //dd($response);
         $response->assertStatus(200);
         $this->assertEquals(25, $response);
     }

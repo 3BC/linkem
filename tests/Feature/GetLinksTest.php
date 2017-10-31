@@ -20,56 +20,17 @@ class GetLinksTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-<<<<<<< HEAD
-        $user = factory(User::class)->create();
-
-        $link = factory(Link::class, $this->link_count_for_factories)->create();
-
-        $response = $this
-                ->actingAs($user, 'api')
-                ->json('GET', '/api/links/all');
-
-        $response->assertStatus(200);
-        $this->assertEquals($this->link_count_for_factories, count($response->original));
-    }
-
-    /** @test */
-    function get_empty_list_of_all_links()
-    {
-        $this->withoutExceptionHandling();
-
-        $user = factory(User::class)->create();
-=======
         $u = factory(App\User::class, 25)->create()->each(function ($u){
           $u->links()->save(factory(App\Link::class)->make());
         });
->>>>>>> Link fetch tests started. Making commit before rebasing from 3BC
 
         $response = $this
                 ->actingAs($user, 'api')
                 ->json('GET', '/api/links/all');
 
         $response->assertStatus(200);
-<<<<<<< HEAD
-
-        $this->assertEquals(0, count($response->json()));
-    }
-
-    /** @test */
-    function get_single_link_by_link_id()
-    {
-        $this->withoutExceptionHandling();
-
-        $user = factory(User::class)->create();
-
-        $link = factory(Link::class, $this->link_count_for_factories)->create();
-
-        $random_link_selection = rand(0,($this->link_count_for_factories-1));
-
-        $response = $this
-                ->actingAs($user, 'api')
-                ->json('GET', '/api/links/all/'.$random_link_selection);
-
+        $response = $this->json('GET', '/api/links');
+        //dd($response);
         $response->assertStatus(200);
 
         $this->assertEquals(1, count($response->original));

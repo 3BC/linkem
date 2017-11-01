@@ -50,9 +50,16 @@ class UserLinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+      $user = $request->user();
+      $link = $user->links()->where('id', $id)->first();
+
+      if(count($link) > 0){
+        return $link;
+      }else{
+        return response('Link Not Found', 404);
+      }
     }
 
     /**

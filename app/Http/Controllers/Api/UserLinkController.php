@@ -50,6 +50,7 @@ class UserLinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+<<<<<<< HEAD
     public function show(Request $request, $id)
     {
       $user = $request->user();
@@ -60,6 +61,11 @@ class UserLinkController extends Controller
       }else{
         return response('Link Not Found', 404);
       }
+=======
+    public function show($id)
+    {
+        //
+>>>>>>> Get all links tests completed and passing.
     }
 
     /**

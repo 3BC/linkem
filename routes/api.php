@@ -27,6 +27,9 @@ Route::middleware('auth:api')->group(function () {
 
     // User Link Access
     Route::get('links', 'Api\UserLinkController@index');
+<<<<<<< HEAD
     Route::get('links/{id}', 'Api\UserLinkController@show');
+=======
+>>>>>>> Get all links tests completed and passing.
 
 });

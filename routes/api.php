@@ -22,4 +22,10 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('rooms/{room}', 'Api\RoomController@update');
 
     Route::post('links', 'Api\LinkController@store');
+    Route::get('links/all', 'Api\LinkController@index');
+    Route::get('links/all/{id}', 'Api\LinkController@show');
+
+    // User Link Access
+    Route::get('links', 'Api\UserLinkController@index');
+
 });

@@ -13,10 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('links', 'Api\LinkController@index');
-
 
 Route::middleware('auth:api')->group(function () {
     Route::post('rooms', 'Api\RoomController@store');
+
+    // Full Link Access
     Route::post('links', 'Api\LinkController@store');
+    Route::get('links/all', 'Api\LinkController@index');
+    Route::get('links/all/{id}', 'Api\LinkController@show');
+
+    // User Link Access
+    Route::get('links', 'Api\UserLinkController@index');
+
 });

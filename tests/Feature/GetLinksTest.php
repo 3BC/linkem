@@ -85,12 +85,7 @@ class GetLinksTest extends TestCase
 
         $response->assertStatus(404);
 
-<<<<<<< HEAD
-=======
         $this->assertEquals(25, $response);
->>>>>>> Link fetch tests started. Making commit before rebasing from 3BC
-=======
->>>>>>> Get all links tests completed and passing.
     }
 
 }

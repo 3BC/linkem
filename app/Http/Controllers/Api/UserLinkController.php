@@ -51,6 +51,7 @@ class UserLinkController extends Controller
      * @return \Illuminate\Http\Response
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     public function show(Request $request, $id)
     {
       $user = $request->user();
@@ -66,6 +67,18 @@ class UserLinkController extends Controller
     {
         //
 >>>>>>> Get all links tests completed and passing.
+=======
+    public function show(Request $request, $id)
+    {
+      $user = $request->user();
+      $link = $user->links()->where('id', $id)->first();
+
+      if(count($link) > 0){
+        return $link;
+      }else{
+        return response('Link Not Found', 404);
+      }
+>>>>>>> Get all and user links tests completed and verified. Testsinclude all link retrival and single link retrival.
     }
 
     /**

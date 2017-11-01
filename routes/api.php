@@ -24,5 +24,6 @@ Route::middleware('auth:api')->group(function () {
 
     // User Link Access
     Route::get('links', 'Api\UserLinkController@index');
+    Route::get('links/{id}', 'Api\UserLinkController@show');
 
 });

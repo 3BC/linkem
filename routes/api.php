@@ -24,6 +24,7 @@ Route::get('links', 'Api\LinkController@index');
 
 // Routes Protected by Auth
 Route::middleware('auth:api')->group(function () {
+    Route::get('rooms', 'Api\RoomController@index');
     Route::post('rooms', 'Api\RoomController@store');
     Route::patch('rooms/{room}', 'Api\RoomController@update');
 

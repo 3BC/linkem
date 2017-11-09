@@ -11,10 +11,10 @@ class Link extends Model
      *
      * @var array
      */
-    protected $fillable = ['url', 'name', 'description','feed'];
+    protected $fillable = ['url', 'name', 'description'];
 
-    public function users(){
-      return $this->belongsToMany('App\User');
-
+    public function users()
+    {
+        return $this->belongsToMany('App\User');
     }
 }

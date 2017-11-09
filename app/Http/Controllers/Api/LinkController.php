@@ -45,27 +45,15 @@ class LinkController extends Controller
      */
     public function store(StoreLink $request)
     {
-        // Get the user ID so we can attach it to the link
-        $user_id = ($request->user()->id) ? $request->user()->id : null;
+        $link = Link::firstOrCreate(
+            [
+                'url' => $request->url
+            ],
+            $request->all()
+        );
 
-        // Getting the request data
-        $link_request = $request->all();
+        $link->users()->attach($request->user()->id);
 
-
-        // Perform link check. See if it already exists.
-        // If the link already exists all we need to do is relate it to the user
-        $link = Link::where('url', $request['url'])->first();
-
-        if(count($link) == 0){
-
-          // Add the link to the DB
-          $created_link = Link::create($link_request);
-          $created_link->users()->attach($user_id);
-          return $created_link;
-        }
-
-        // Relate the link to the user.
-        $link->users()->attach($user_id);
         return $link;
     }
 }

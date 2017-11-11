@@ -1,6 +1,6 @@
 <?php
 
-//namespace Tests\Feature;
+namespace Tests\Feature;
 
 use App\Link;
 use App\User;
@@ -12,9 +12,6 @@ class GetLinksTest extends TestCase
 {
     use RefreshDatabase;
 
-    // Class var that allows me to control factory counts easily.
-    private $link_count_for_factories = 25;
-
     /** @test */
     function get_list_of_all_links()
     {
@@ -22,14 +19,14 @@ class GetLinksTest extends TestCase
 
         $user = factory(User::class)->create();
 
-        $link = factory(Link::class, $this->link_count_for_factories)->create();
+        $link = factory(Link::class, 5)->create();
 
         $response = $this
                 ->actingAs($user, 'api')
                 ->json('GET', '/api/links/all');
 
         $response->assertStatus(200);
-        $this->assertEquals($this->link_count_for_factories, count($response->original));
+        $this->assertEquals(5, count($response->original));
     }
 
     /** @test */
@@ -55,9 +52,9 @@ class GetLinksTest extends TestCase
 
         $user = factory(User::class)->create();
 
-        $link = factory(Link::class, $this->link_count_for_factories)->create();
+        $link = factory(Link::class, 5)->create();
 
-        $random_link_selection = rand(0,($this->link_count_for_factories-1));
+        $random_link_selection = rand(0,4);
 
         $response = $this
                 ->actingAs($user, 'api')
@@ -75,9 +72,9 @@ class GetLinksTest extends TestCase
 
         $user = factory(User::class)->create();
 
-        $link = factory(Link::class, $this->link_count_for_factories)->create();
+        $link = factory(Link::class, 5)->create();
 
-        $random_link_selection = $this->link_count_for_factories + 1 ;
+        $random_link_selection = 6;
 
         $response = $this
                 ->actingAs($user, 'api')

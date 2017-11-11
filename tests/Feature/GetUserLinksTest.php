@@ -12,27 +12,25 @@ class GetUserLinksTest extends TestCase
     use RefreshDatabase;
 
     // Class var that allows me to control factory counts easily.
-    private $user_count_for_factories = 25;
 
     /** @test */
     function get_list_of_all_user_links()
     {
         $this->withoutExceptionHandling();
 
-        $u = factory(App\User::class, $this->user_count_for_factories)->create()->each(function ($u){
-          $u->links()->save(factory(App\Link::class)->make());
-        });
+        $user = factory(User::class)->create();
+        $links = factory(Link::class, 5)->create();
 
-        $random_user = rand(0,($this->user_count_for_factories-1));
-
-        $user = $u[$random_user];
+        $user->links()->attach($links[0]);
 
         $response = $this
         ->actingAs($user, 'api')
         ->json('GET', '/api/links');
 
         $response->assertStatus(200);
-        $this->assertEquals(1, count($response->original));
+
+        // We only associated 1 link to the user $link[0]
+        $this->assertEquals(1, count($response->json()));
     }
 
     /** @test */
@@ -40,27 +38,18 @@ class GetUserLinksTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $u = factory(App\User::class, $this->user_count_for_factories)->create()->each(function ($u){
-
-          // Only create link associations for odd users.
-          // This way, we can use an even user to try and fetch an association where there is no link.
-          if(($u->id % 2) == 1){ $u->links()->save(factory(App\Link::class)->make()); }
-
-        });
-
-        // Get an even user
-        do{
-          $random_user = rand(0,($this->user_count_for_factories-1));
-        }while($random_user % 2 == 0);
-
-        $user = $u[$random_user];
+        $user= factory(User::class)->create();
+        $links = factory(Link::class, 5)->create();
 
         $response = $this
         ->actingAs($user, 'api')
         ->json('GET', '/api/links');
 
         $response->assertStatus(200);
-        $this->assertEquals(0, count($response->original));
+
+        // We did not associate a link to the user.
+        // Notice line 24 is missing from this function
+        $this->assertEquals(0, count($response->json()));
     }
 
     /** @test */
@@ -68,19 +57,16 @@ class GetUserLinksTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $u = factory(App\User::class, $this->user_count_for_factories)->create()->each(function ($u){
-          $u->links()->save(factory(App\Link::class)->make());
-        });
+        $user = factory(User::class)->create();
+        $links = factory(Link::class, 5)->create();
 
-        $random_user = rand(0,($this->user_count_for_factories-1));
+        $user->links()->attach($links[0]);
 
-        $user = $u[$random_user];
-
-        $a_link_for_user = $user->links()->get()->first();
+        $user_link = $user->links()->get();
 
         $response = $this
         ->actingAs($user, 'api')
-        ->json('GET', '/api/links/'.$a_link_for_user->id);
+        ->json('GET', '/api/links/'.$user_link[0]->id);
 
         $response->assertStatus(200);
         $this->assertEquals(1, count($response->original));
@@ -89,24 +75,14 @@ class GetUserLinksTest extends TestCase
     /** @test */
     function get_single_link_for_user_with_invalid_id()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
-        $u = factory(App\User::class, $this->user_count_for_factories)->create()->each(function ($u){
-          $u->links()->save(factory(App\Link::class)->make());
-        });
-
-        $random_user = rand(0,($this->user_count_for_factories-1));
-
-        $user = $u[$random_user];
-
-        $invalid_random_link_selection_id = $this->user_count_for_factories + 1 ;
+        $user = factory(User::class)->create();
+        $links = factory(Link::class, 5)->create();
 
         $response = $this
         ->actingAs($user, 'api')
-        ->json('GET', '/api/links/'.$invalid_random_link_selection_id);
-
-        //dd($response->original);
-
+        ->json('GET', '/api/links/6');
         $response->assertStatus(404);
     }
 

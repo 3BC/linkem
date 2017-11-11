@@ -14,24 +14,39 @@ use Illuminate\Http\Request;
 */
 
 
+/*
+|--------------------------------------------------------------------------
+| Unprotected API Routes
+|--------------------------------------------------------------------------
+|
+*/
+
+// Link Access
+
+
+/*
+|--------------------------------------------------------------------------
+| Protected API Routes
+|--------------------------------------------------------------------------
+|
+*/
+
 Route::middleware('auth:api')->group(function () {
+
+    // Room endpoints
     Route::post('rooms', 'Api\RoomController@store');
-
-    // Full Link Access
-Route::get('links', 'Api\LinkController@index');
-
-// Routes Protected by Auth
-Route::middleware('auth:api')->group(function () {
     Route::get('rooms', 'Api\RoomController@index');
     Route::post('rooms', 'Api\RoomController@store');
     Route::patch('rooms/{room}', 'Api\RoomController@update');
 
-    Route::post('links', 'Api\LinkController@store');
+    // Link endpoints
     Route::get('links/all', 'Api\LinkController@index');
     Route::get('links/all/{id}', 'Api\LinkController@show');
 
     // User Link Access
     Route::get('links', 'Api\UserLinkController@index');
     Route::get('links/{id}', 'Api\UserLinkController@show');
+    Route::post('links', 'Api\UserLinkController@store');
+
 
 });

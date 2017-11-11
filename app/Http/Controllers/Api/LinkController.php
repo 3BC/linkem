@@ -33,7 +33,7 @@ class LinkController extends Controller
         if(count($link) > 0){
           return $link;
         }else{
-          return response('Link Not Found', 404); 
+          return response('Link Not Found', 404);
         }
     }
 
@@ -43,17 +43,8 @@ class LinkController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreLink $request)
+    public function store(Request $request)
     {
-        $link = Link::firstOrCreate(
-            [
-                'url' => $request->url
-            ],
-            $request->all()
-        );
 
-        $link->users()->attach($request->user()->id);
-
-        return $link;
     }
 }

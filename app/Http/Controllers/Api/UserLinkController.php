@@ -42,6 +42,16 @@ class UserLinkController extends Controller
     public function store(Request $request)
     {
         //
+        $link = Link::firstOrCreate(
+            [
+                'url' => $request->url
+            ],
+            $request->all()
+        );
+
+        $link->users()->attach($request->user()->id);
+
+        return $link;
     }
 
     /**
@@ -64,13 +74,10 @@ class UserLinkController extends Controller
     public function show(Request $request, $id)
     {
       $user = $request->user();
-      $link = $user->links()->where('id', $id)->first();
+      $link = Link::where('id', $id)->firstOrFail();
 
-      if(count($link) > 0){
-        return $link;
-      }else{
-        return response('Link Not Found', 404);
-      }
+      return $link;
+
     }
 
     /**

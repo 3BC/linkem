@@ -30,6 +30,6 @@ class User extends Authenticatable
 
     public function links()
     {
-        return $this->belongsToMany('App\Links');
+        return $this->belongsToMany('App\Link');
     }
 }

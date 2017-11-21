@@ -21,22 +21,30 @@ class LinkController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $link = Link::where('id', $id)->first();
+
+        if(count($link) > 0){
+          return $link;
+        }else{
+          return response('Link Not Found', 404);
+        }
+    }
+
+    /**
      * Store a newly created link in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreLink $request)
+    public function store(Request $request)
     {
-        $link = Link::firstOrCreate(
-            [
-                'url' => $request->url
-            ],
-            $request->all()
-        );
 
-        $link->users()->attach($request->user()->id);
-
-        return $link;
     }
 }

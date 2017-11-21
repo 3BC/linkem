@@ -82,7 +82,6 @@ class GetLinksTest extends TestCase
 
         $response->assertStatus(404);
 
-        $this->assertEquals(25, $response);
     }
 
 }

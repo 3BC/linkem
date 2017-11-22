@@ -42,6 +42,7 @@ Route::middleware('auth:api')->group(function () {
     // Link endpoints
     Route::get('links/all', 'Api\LinkController@index');
     Route::get('links/all/{id}', 'Api\LinkController@show');
+    Route::patch('links/all/{id}', 'Api\LinkController@update');
 
     // User Link Access
     Route::get('links', 'Api\UserLinkController@index');

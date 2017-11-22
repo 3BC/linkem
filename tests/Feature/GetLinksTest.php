@@ -61,14 +61,13 @@ class GetLinksTest extends TestCase
                 ->json('GET', '/api/links/all/'.$random_link_selection);
 
         $response->assertStatus(200);
-
-        $this->assertEquals(1, count($response->original));
+        $this->assertEquals($random_link_selection, $response->Json()['id']);
     }
 
     /** @test */
     function get_single_link_with_invalid_link_id()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 

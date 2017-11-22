@@ -6,6 +6,7 @@ use App\Link;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreLink;
+use App\Http\Requests\EditLink;
 use App\Http\Controllers\Controller;
 
 class LinkController extends Controller
@@ -26,25 +27,31 @@ class LinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $link = Link::where('id', $id)->first();
-
-        if(count($link) > 0){
-          return $link;
-        }else{
-          return response('Link Not Found', 404);
-        }
+      $user = $request->user();
+      $link = Link::where('id', $id)->firstOrFail();
+      return $link;
     }
 
     /**
-     * Store a newly created link in storage.
+     * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function update(EditLink $request, $id)
     {
+      $link = Link::where('id', $id)->firstOrFail();
+      $data = $request->all();
 
+      if($data['name'] && isset($data['name'])) {$link->name = $data['name']; }
+      $link->url = $data['url'];
+      $link->description = $data['description'];
+
+      $link->save();
+
+      return $link;
     }
 }

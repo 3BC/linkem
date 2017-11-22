@@ -61,8 +61,7 @@ class GetLinksTest extends TestCase
                 ->json('GET', '/api/links/all/'.$random_link_selection);
 
         $response->assertStatus(200);
-        $link = Link::where('id', $random_link_selection);
-        $this->assertEquals(1, count($link));
+        $this->assertEquals($random_link_selection, $response->Json()['id']);
     }
 
     /** @test */

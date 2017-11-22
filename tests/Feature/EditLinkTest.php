@@ -129,7 +129,7 @@ class EditLinkTest extends TestCase
       $link = factory(Link::class, 5)->create();
 
       $input = [
-        "url" => "failedurl",
+        "url" => "https://www.updatedlink.com",
         "name" => "",
         "description" => "some link description"
       ];
@@ -138,9 +138,7 @@ class EditLinkTest extends TestCase
       ->actingAs($user, 'api')
       ->json('PATCH', '/api/links/all/'.$link_id, $input);
 
-      $response->assertStatus(422);
-
-      $this->assertArrayHasKey('url', $response->Json()['errors']);
+      $response->assertStatus(200);
     }
 
     /** @test */

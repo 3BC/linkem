@@ -43,11 +43,10 @@ class LinkController extends Controller
      */
     public function update(EditLink $request, $id)
     {
-      $user = $request->user();
       $link = Link::where('id', $id)->firstOrFail();
       $data = $request->all();
 
-      $link->name = $data['name'];
+      if($data['name'] && isset($data['name'])) {$link->name = $data['name']; }
       $link->url = $data['url'];
       $link->description = $data['description'];
 

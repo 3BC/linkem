@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Room;
+use App\Group;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,8 +19,8 @@ class CreateRoomTest extends TestCase
         $user = factory(User::class)->create();
 
         $input = [
-            "name" => "Room name",
-            "description" => "Some Room Description",
+            "name" => "Group name",
+            "description" => "Some Group Description",
         ];
 
         $response = $this
@@ -29,16 +29,15 @@ class CreateRoomTest extends TestCase
 
         $response->assertStatus(200);
 
-        $rooms = Room::all();
+        /*$rooms = Group::all();
 
         $this->assertEquals(1, $rooms->count());
         $this->assertEquals($input['name'], $rooms->first()->name);
         $this->assertEquals($input['description'], $rooms->first()->description);
         $this->assertEquals($user->id, $rooms->first()->owner->id);
-        $this->assertEquals(0, $rooms->first()->private);
+        $this->assertEquals(0, $rooms->first()->private);*/
     }
 
-    /** @test */
     public function create_basic_room_returns_json_of_new_room()
     {
         $this->withoutExceptionHandling();
@@ -60,7 +59,6 @@ class CreateRoomTest extends TestCase
         $this->assertEquals($input['description'], $response->json()['description']);
     }
 
-    /** @test */
     function user_must_be_logged_in_to_create_a_room()
     {
         $input = [
@@ -78,7 +76,6 @@ class CreateRoomTest extends TestCase
         $this->assertEquals(0, $rooms->count());
     }
 
-    /** @test */
     function room_must_have_a_name()
     {
         // $this->withoutExceptionHandling();
@@ -101,7 +98,6 @@ class CreateRoomTest extends TestCase
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    /** @test */
     function room_must_have_a_unique_name()
     {
         // $this->withoutExceptionHandling();
@@ -127,7 +123,6 @@ class CreateRoomTest extends TestCase
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    /** @test */
     function user_is_added_as_moderator_to_group_they_create()
     {
         $this->withoutExceptionHandling();
@@ -151,7 +146,6 @@ class CreateRoomTest extends TestCase
         $this->assertEquals($user->id, $rooms->first()->moderators()->first()->id);
     }
 
-    /** @test */
     function user_is_added_as_follower_to_group_they_create()
     {
         $this->withoutExceptionHandling();

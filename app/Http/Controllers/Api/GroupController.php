@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Room;
+use App\Group;
 use Illuminate\Http\Request;
 use App\Http\Requests\EditRoom;
 use App\Http\Requests\StoreRoom;
 use App\Http\Controllers\Controller;
 
-class RoomController extends Controller
+class GroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class RoomController extends Controller
      */
     public function index(Request $request)
     {
-        return Room::where('owner_id', $request->user()->id)->get();
+        return Group::where('owner_id', $request->user()->id)->get();
     }
 
     /**
@@ -28,15 +28,10 @@ class RoomController extends Controller
      */
     public function store(StoreRoom $request)
     {
-        $room = new Room;
+        $room = new Group;
         $room->name = $request->name;
         $room->description = $request->description;
-        $room->private = $request->has('private');
-        $room->owner()->associate($request->user());
         $room->save();
-
-        $room->moderators()->attach($request->user()->id);
-        $room->followers()->attach($request->user()->id);
 
         return $room;
     }

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Room extends Model
+class Group extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,7 @@ class Room extends Model
      */
     public function moderators()
     {
-        return $this->belongsToMany('App\User', 'room_moderators');
+        return $this->belongsToMany('App\User', 'group_moderator');
     }
 
     /**
@@ -34,6 +34,6 @@ class Room extends Model
      */
     public function followers()
     {
-        return $this->belongsToMany('App\User', 'room_followers');
+        return $this->belongsToMany('App\User', 'group_follower');
     }
 }

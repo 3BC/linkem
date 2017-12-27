@@ -31,10 +31,11 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::middleware('auth:api')->group(function () {
 
     // Room endpoints
-    Route::post('rooms', 'Api\GroupController@store');
+    Route::post('groups', 'Api\GroupController@store');
     Route::get('rooms', 'Api\GroupController@index');
     Route::post('rooms', 'Api\GroupController@store');
     Route::patch('rooms/{room}', 'Api\GroupController@update');

@@ -6,6 +6,6 @@ $factory->define(App\Group::class, function (Faker $faker) {
     return [
         'name' => $faker->unique()->word,
         'description' => $faker->words(4, true),
-        'personal' => false,
+        'private' => false,
     ];
 });

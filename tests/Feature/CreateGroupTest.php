@@ -7,12 +7,12 @@ use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class CreateRoomTest extends TestCase
+class CreateGroupTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    function user_can_create_basic_room()
+    function user_can_create_basic_group()
     {
         $this->withoutExceptionHandling();
 
@@ -25,19 +25,19 @@ class CreateRoomTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', 'api/rooms', $input);
+                    ->json('POST', 'api/groups', $input);
 
         $response->assertStatus(200);
 
-        /*$rooms = Group::all();
+        $groups = Group::all();
 
-        $this->assertEquals(1, $rooms->count());
-        $this->assertEquals($input['name'], $rooms->first()->name);
-        $this->assertEquals($input['description'], $rooms->first()->description);
-        $this->assertEquals($user->id, $rooms->first()->owner->id);
-        $this->assertEquals(0, $rooms->first()->private);*/
+        $this->assertEquals(1, $groups->count());
+        $this->assertEquals($input['name'], $groups->first()->name);
+        $this->assertEquals($input['description'], $groups->first()->description);
+        $this->assertEquals(0, $groups->first()->private);
     }
 
+    /** @test */
     public function create_basic_room_returns_json_of_new_room()
     {
         $this->withoutExceptionHandling();
@@ -51,7 +51,7 @@ class CreateRoomTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', '/api/rooms', $input);
+                    ->json('POST', '/api/groups', $input);
 
         $response->assertStatus(200);
 
@@ -59,6 +59,7 @@ class CreateRoomTest extends TestCase
         $this->assertEquals($input['description'], $response->json()['description']);
     }
 
+    /** @test */
     function user_must_be_logged_in_to_create_a_room()
     {
         $input = [
@@ -71,11 +72,12 @@ class CreateRoomTest extends TestCase
 
         $response->assertStatus(401);
 
-        $rooms = Room::all();
+        $groups = Group::all();
 
-        $this->assertEquals(0, $rooms->count());
+        $this->assertEquals(0, $groups->count());
     }
 
+    /** @test */
     function room_must_have_a_name()
     {
         // $this->withoutExceptionHandling();
@@ -89,20 +91,21 @@ class CreateRoomTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', '/api/rooms', $input);
+                    ->json('POST', '/api/groups', $input);
 
         $response->assertStatus(422);
 
-        $rooms = Room::all();
-        $this->assertEquals(0, $rooms->count());
+        $groups = Group::all();
+        $this->assertEquals(0, $groups->count());
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
+    /** @test */
     function room_must_have_a_unique_name()
     {
         // $this->withoutExceptionHandling();
 
-        $room = factory(Room::class)->create([
+        $group = factory(Group::class)->create([
             "name" => "Duplicate Name"
         ]);
 
@@ -118,11 +121,12 @@ class CreateRoomTest extends TestCase
 
         $response->assertStatus(422);
 
-        $rooms = Room::all();
-        $this->assertEquals(1, $rooms->count());
+        $groups = Group::all();
+        $this->assertEquals(1, $groups->count());
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
+    /** @test */
     function user_is_added_as_moderator_to_group_they_create()
     {
         $this->withoutExceptionHandling();

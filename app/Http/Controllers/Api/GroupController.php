@@ -28,12 +28,12 @@ class GroupController extends Controller
      */
     public function store(StoreRoom $request)
     {
-        $room = new Group;
-        $room->name = $request->name;
-        $room->description = $request->description;
-        $room->save();
+        $group = new Group;
+        $group->name = $request->name;
+        $group->description = $request->description;
+        $group->save();
 
-        return $room;
+        return $group;
     }
 
     /**

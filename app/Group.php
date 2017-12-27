@@ -11,7 +11,7 @@ class Group extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'private'];
 
     /**
      * Get the user that owns the room.

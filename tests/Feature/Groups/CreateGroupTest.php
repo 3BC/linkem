@@ -38,7 +38,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function create_basic_room_returns_json_of_new_room()
+    public function create_basic_room_returns_json_of_new_group()
     {
         $this->withoutExceptionHandling();
 
@@ -60,7 +60,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    function user_must_be_logged_in_to_create_a_room()
+    function user_must_be_logged_in_to_create_a_group()
     {
         $input = [
             "name" => "Room name",
@@ -78,7 +78,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    function room_must_have_a_name()
+    function group_must_have_a_name()
     {
         // $this->withoutExceptionHandling();
 
@@ -101,7 +101,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    function room_must_have_a_unique_name()
+    function group_must_have_a_unique_name()
     {
         // $this->withoutExceptionHandling();
 
@@ -117,7 +117,7 @@ class CreateGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', '/api/rooms', $input);
+                    ->json('POST', '/api/groups', $input);
 
         $response->assertStatus(422);
 
@@ -127,7 +127,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    function user_is_added_as_moderator_to_group_they_create()
+    function user_is_added_as_owner_to_group_they_create()
     {
         $this->withoutExceptionHandling();
 
@@ -140,16 +140,17 @@ class CreateGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', 'api/rooms', $input);
+                    ->json('POST', 'api/groups', $input);
 
         $response->assertStatus(200);
 
-        $rooms = Room::all();
+        $groups = Group::all();
 
-        $this->assertEquals(1, $rooms->first()->moderators()->count());
-        $this->assertEquals($user->id, $rooms->first()->moderators()->first()->id);
+        $this->assertEquals(1, $groups->first()->owners()->count());
+        $this->assertEquals($user->id, $groups->first()->owners()->first()->id);
     }
 
+    /** @test */
     function user_is_added_as_follower_to_group_they_create()
     {
         $this->withoutExceptionHandling();
@@ -167,9 +168,9 @@ class CreateGroupTest extends TestCase
 
         $response->assertStatus(200);
 
-        $rooms = Room::all();
+        $groups = Group::all();
 
-        $this->assertEquals(1, $rooms->first()->followers()->count());
-        $this->assertEquals($user->id, $rooms->first()->followers()->first()->id);
+        $this->assertEquals(1, $groups->first()->users()->count());
+        $this->assertEquals($user->id, $groups->first()->users()->first()->id);
     }
 }

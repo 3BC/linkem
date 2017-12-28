@@ -2,46 +2,45 @@
 
 namespace Tests\Feature;
 
-use App\Room;
+use App\Group;
 use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class EditRoomTest extends TestCase
+class EditGroupTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function user_can_edit_a_rooms_name()
+    public function user_can_edit_a_group_name()
     {
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 
-        $room = factory(Room::class)->create([
-            'name' => "Original Room Name",
-            "description" => "Some Room Description",
+        $group = factory(Group::class)->create([
+            'name' => "Original Group Name",
+            "description" => "Some Group Description",
         ]);
 
         $input = [
-            "name" => "New Room Name",
-            "description" => "Some Room Description",
+            "name" => "New Group Name",
+            "description" => "Some Group Description",
         ];
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('PATCH', 'api/rooms/'.$room->id, $input);
+                    ->json('PATCH', 'api/groups/'.$group->id, $input);
 
         $response->assertStatus(200);
 
-        $rooms = Room::all();
+        $groups = Group::all();
 
-        $this->assertEquals(1, $rooms->count());
-        $this->assertEquals($input['name'], $rooms->first()->name);
-        $this->assertEquals($input['description'], $rooms->first()->description);
+        $this->assertEquals(1, $groups->count());
+        $this->assertEquals($input['name'], $groups->first()->name);
+        $this->assertEquals($input['description'], $groups->first()->description);
     }
 
-    /** @test */
     public function create_basic_room_returns_json_of_new_room()
     {
         $this->withoutExceptionHandling();
@@ -68,7 +67,6 @@ class EditRoomTest extends TestCase
         $this->assertEquals($input['description'], $response->json()['description']);
     }
 
-    /** @test */
     public function user_must_be_logged_in_to_edit_a_room()
     {
         $room = factory(Room::class)->create([
@@ -87,7 +85,6 @@ class EditRoomTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
     public function room_must_have_a_name_when_editing()
     {
         // $this->withoutExceptionHandling();
@@ -113,7 +110,6 @@ class EditRoomTest extends TestCase
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    /** @test */
     public function room_must_have_a_unique_name_when_editing()
     {
         // $this->withoutExceptionHandling();
@@ -140,7 +136,6 @@ class EditRoomTest extends TestCase
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    /** @test */
     public function room_can_be_updated_with_same_information()
     {
         $this->withoutExceptionHandling();

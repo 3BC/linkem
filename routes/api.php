@@ -38,7 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('groups', 'Api\GroupController@store');
     Route::get('rooms', 'Api\GroupController@index');
     Route::post('rooms', 'Api\GroupController@store');
-    Route::patch('rooms/{room}', 'Api\GroupController@update');
+    Route::patch('groups/{room}', 'Api\GroupController@update');
 
     // Link endpoints
     Route::get('links/all', 'Api\LinkController@index');

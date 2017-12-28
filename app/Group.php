@@ -16,9 +16,9 @@ class Group extends Model
     /**
      * Get the user that owns the room.
      */
-    public function owner()
+    public function owners()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsToMany('App\User', 'group_owner');
     }
 
     /**
@@ -32,8 +32,8 @@ class Group extends Model
     /**
      * The followers that belong to the room.
      */
-    public function followers()
+    public function users()
     {
-        return $this->belongsToMany('App\User', 'group_follower');
+        return $this->belongsToMany('App\User', 'group_user');
     }
 }

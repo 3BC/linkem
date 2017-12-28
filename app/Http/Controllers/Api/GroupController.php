@@ -28,10 +28,13 @@ class GroupController extends Controller
      */
     public function store(StoreRoom $request)
     {
-        $group = new Group;
-        $group->name = $request->name;
-        $group->description = $request->description;
-        $group->save();
+        $group = Group::create([
+          'name'=> $request->name,
+          'description'=> $request->description,
+        ]);
+
+        $group->owners()->attach($request->user()->id);
+        $group->users()->attach($request->user()->id);
 
         return $group;
     }

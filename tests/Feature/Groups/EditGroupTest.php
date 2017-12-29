@@ -23,6 +23,8 @@ class EditGroupTest extends TestCase
             "description" => "Some Group Description",
         ]);
 
+        $group->owners()->attach($user->id);
+
         $input = [
             "name" => "New Group Name",
             "description" => "Some Group Description",
@@ -41,16 +43,19 @@ class EditGroupTest extends TestCase
         $this->assertEquals($input['description'], $groups->first()->description);
     }
 
-    public function create_basic_room_returns_json_of_new_room()
+    /** @test */
+    public function create_basic_room_returns_json_of_new_group()
     {
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 
-        $room = factory(Room::class)->create([
+        $group = factory(Group::class)->create([
             'name' => "Original Room Name",
             "description" => "Some Room Description",
         ]);
+
+        $group->owners()->attach($user->id);
 
         $input = [
             "name" => "New Room Name",
@@ -59,7 +64,7 @@ class EditGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('PATCH', 'api/rooms/'.$room->id, $input);
+                    ->json('PATCH', 'api/groups/'.$group->id, $input);
 
         $response->assertStatus(200);
 
@@ -67,9 +72,10 @@ class EditGroupTest extends TestCase
         $this->assertEquals($input['description'], $response->json()['description']);
     }
 
-    public function user_must_be_logged_in_to_edit_a_room()
+    /** @test */
+    public function user_must_be_logged_in_to_edit_a_group()
     {
-        $room = factory(Room::class)->create([
+        $group = factory(Group::class)->create([
             'name' => "Original Room Name",
             "description" => "Some Room Description",
         ]);
@@ -80,21 +86,24 @@ class EditGroupTest extends TestCase
         ];
 
         $response = $this
-                    ->json('PATCH', 'api/rooms/'.$room->id, $input);
+                    ->json('PATCH', 'api/groups/'.$group->id, $input);
 
         $response->assertStatus(401);
     }
 
-    public function room_must_have_a_name_when_editing()
+    /** @test */
+    public function group_must_have_a_name_when_editing()
     {
         // $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 
-        $room = factory(Room::class)->create([
+        $group = factory(Group::class)->create([
             'name' => "Original Room Name",
             "description" => "Some Room Description",
         ]);
+
+        $group->owners()->attach($user->id);
 
         $input = [
             "name" => "",
@@ -103,26 +112,29 @@ class EditGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('PATCH', 'api/rooms/'.$room->id, $input);
+                    ->json('PATCH', 'api/groups/'.$group->id, $input);
 
         $response->assertStatus(422);
 
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    public function room_must_have_a_unique_name_when_editing()
+    /** @test */
+    public function group_must_have_a_unique_name_when_editing()
     {
         // $this->withoutExceptionHandling();
 
-        $roomOne = factory(Room::class)->create([
+        $groupOne = factory(Group::class)->create([
             "name" => "Room Name"
         ]);
 
-        $roomTwo = factory(Room::class)->create([
+        $groupTwo = factory(Group::class)->create([
             "name" => "Duplicate Name"
         ]);
 
         $user = factory(User::class)->create();
+
+        $groupOne->owners()->attach($user->id);
 
         $input = [
             "name" => "Duplicate Name",
@@ -130,22 +142,25 @@ class EditGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('PATCH', 'api/rooms/'.$roomOne->id, $input);
+                    ->json('PATCH', 'api/groups/'.$groupOne->id, $input);
 
         $response->assertStatus(422);
         $this->assertArrayHasKey('name', $response->Json()['errors']);
     }
 
-    public function room_can_be_updated_with_same_information()
+    /** @test */
+    public function group_can_be_updated_with_same_information()
     {
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 
-        $room = factory(Room::class)->create([
+        $group = factory(Group::class)->create([
             'name' => "Original Room Name",
             "description" => "Some Room Description",
         ]);
+
+        $group->owners()->attach($user->id);
 
         $input = [
             "name" => "Original Room Name",
@@ -154,7 +169,7 @@ class EditGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('PATCH', 'api/rooms/'.$room->id, $input);
+                    ->json('PATCH', 'api/groups/'.$group->id, $input);
 
         $response->assertStatus(200);
 

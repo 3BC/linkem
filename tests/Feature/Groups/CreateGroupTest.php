@@ -68,7 +68,7 @@ class CreateGroupTest extends TestCase
         ];
 
         $response = $this
-                    ->json('POST', '/api/rooms', $input);
+                    ->json('POST', '/api/groups', $input);
 
         $response->assertStatus(401);
 
@@ -164,7 +164,7 @@ class CreateGroupTest extends TestCase
 
         $response = $this
                     ->actingAs($user, 'api')
-                    ->json('POST', 'api/rooms', $input);
+                    ->json('POST', 'api/groups', $input);
 
         $response->assertStatus(200);
 

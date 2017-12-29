@@ -13,8 +13,13 @@ class Link extends Model
      */
     protected $fillable = ['url', 'name', 'description'];
 
-    public function users()
+    public function group()
     {
-        return $this->belongsToMany('App\User');
+        return $this->hasOne('App\Group');
+    }
+
+    public function user()
+    {
+      return $this->hasOne('App\User');
     }
 }

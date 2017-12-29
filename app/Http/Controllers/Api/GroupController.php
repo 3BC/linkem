@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Group;
 use Illuminate\Http\Request;
-use App\Http\Requests\EditRoom;
-use App\Http\Requests\StoreRoom;
+use App\Http\Requests\EditGroup;
+use App\Http\Requests\StoreGroup;
 use App\Http\Controllers\Controller;
 
 class GroupController extends Controller
@@ -17,7 +17,7 @@ class GroupController extends Controller
      */
     public function index(Request $request)
     {
-        return Group::where('owner_id', $request->user()->id)->get();
+      return $request->user()->groups()->get();
     }
 
     /**
@@ -26,7 +26,7 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreRoom $request)
+    public function store(StoreGroup $request)
     {
         $group = Group::create([
           'name'=> $request->name,
@@ -34,7 +34,7 @@ class GroupController extends Controller
         ]);
 
         $group->owners()->attach($request->user()->id);
-        $group->users()->attach($request->user()->id);
+        $request->user()->groups()->attach($group->id);
 
         return $group;
     }
@@ -46,11 +46,36 @@ class GroupController extends Controller
      * @param  \App\Room  $room
      * @return \Illuminate\Http\Response
      */
-    public function update(EditRoom $request, Room $room)
+    public function update(EditGroup $request, Group $group)
     {
-        $room->fill($request->all());
-        $room->save();
+        $requested_group = Group::findOrFail($group->id);
+        $group_owners = $requested_group->owners()->get();
 
-        return $room;
+        foreach ($group_owners as $owner) {
+          if($owner->id == $request->user()->id)
+          {
+            $group->fill($request->all());
+            $group->save();
+            return $group;
+
+          }
+        }
+
+        return response('User is not an owner of this group.', 403);
+    }
+
+    public function destroy(Request $request, Group $group)
+    {
+      $requested_group = Group::findOrFail($group->id);
+      $group_owners = $requested_group->owners()->get();
+
+      foreach ($group_owners as $owner) {
+        if($owner->id == $request->user()->id)
+        {
+          $group->delete();
+         return;
+        }
+      }
+      return response('User is not an owner of this group.', 403);
     }
 }

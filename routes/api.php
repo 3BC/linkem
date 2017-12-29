@@ -36,9 +36,9 @@ Route::middleware('auth:api')->group(function () {
 
     // Room endpoints
     Route::post('groups', 'Api\GroupController@store');
-    Route::get('rooms', 'Api\GroupController@index');
-    Route::post('rooms', 'Api\GroupController@store');
-    Route::patch('groups/{room}', 'Api\GroupController@update');
+    Route::get('groups', 'Api\GroupController@index');
+    Route::patch('groups/{group}', 'Api\GroupController@update');
+    Route::delete('groups/{group}', 'Api\GroupController@destroy');
 
     // Link endpoints
     Route::get('links/all', 'Api\LinkController@index');

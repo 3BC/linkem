@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class EditRoom extends FormRequest
+class EditGroup extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class EditRoom extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:rooms,name,'.$this->room->id
+            'name' => 'required|unique:groups,name,'.$this->group->id
         ];
     }
 }

@@ -14,7 +14,7 @@ class Group extends Model
     protected $fillable = ['name', 'description', 'private'];
 
     /**
-     * Get the user that owns the room.
+     * Get the user that owns the group.
      */
     public function owners()
     {
@@ -22,7 +22,7 @@ class Group extends Model
     }
 
     /**
-     * The moderators that belong to the room.
+     * The moderators that belong to the group.
      */
     public function moderators()
     {
@@ -30,10 +30,15 @@ class Group extends Model
     }
 
     /**
-     * The followers that belong to the room.
+     * The followers that belong to the group.
      */
     public function users()
     {
         return $this->belongsToMany('App\User', 'group_user');
+    }
+
+    public function links()
+    {
+      return $this->hasMany('App\Link');
     }
 }

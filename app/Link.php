@@ -11,7 +11,7 @@ class Link extends Model
      *
      * @var array
      */
-    protected $fillable = ['url', 'name', 'description'];
+    protected $fillable = ['url', 'name', 'description', 'group_id', 'user_id'];
 
     public function group()
     {

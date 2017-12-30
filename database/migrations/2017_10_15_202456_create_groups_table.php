@@ -40,6 +40,12 @@ class CreateGroupsTable extends Migration
             $table->integer('user_id');
             $table->primary(['group_id', 'user_id']);
         });
+
+        Schema::create('contributor_group', function (Blueprint $table) {
+            $table->integer('group_id');
+            $table->integer('user_id');
+            $table->primary(['group_id', 'user_id']);
+        });
     }
 
     /**
@@ -49,9 +55,11 @@ class CreateGroupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('contributor_group');
         Schema::dropIfExists('group_owner');
         Schema::dropIfExists('group_moderator');
         Schema::dropIfExists('group_user');
+        Schema::dropIfExists('groups');
+
     }
 }

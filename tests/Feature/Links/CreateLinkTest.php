@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Link;
 use App\User;
+use App\Group;
 use Tests\TestCase;
 use Illuminate\Session\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,11 +19,15 @@ class CreateLinkTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "https://www.example.com",
           "name" => "link name",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id,
         ];
 
         $response = $this
@@ -37,6 +42,8 @@ class CreateLinkTest extends TestCase
         $this->assertEquals($input['url'], $links->first()->url);
         $this->assertEquals($input['name'], $links->first()->name);
         $this->assertEquals($input['description'], $links->first()->description);
+        $this->assertEquals($input['group_id'], $links->first()->group_id);
+        $this->assertEquals($user->id, $links->first()->user_id);
     }
 
     /** @test */
@@ -45,11 +52,15 @@ class CreateLinkTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "https://www.example.com",
           "name" => "link name",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id,
         ];
 
         $response = $this
@@ -61,17 +72,47 @@ class CreateLinkTest extends TestCase
         $this->assertEquals($input['url'], $response->json()['url']);
         $this->assertEquals($input['name'], $response->json()['name']);
         $this->assertEquals($input['description'], $response->json()['description']);
+        $this->assertEquals($input['group_id'], $response->json()['group_id']);
+        $this->assertEquals($user->id, $response->json()['user_id']);
+    }
+
+    /** @test */
+    public function create_basic_link_requires_user_to_be_logged_in()
+    {
+        $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
+
+        $input = [
+          "url" => "https://example.com",
+          "name" => "link name",
+          "description" => "some link description",
+          "group_id" => $group->id,
+        ];
+
+        $response = $this
+        ->json('POST', '/api/links', $input);
+
+        $response->assertStatus(401);
+
+        $links = Link::all();
+        $this->assertEquals(0, $links->count());
     }
 
     /** @test */
     public function create_basic_link_requires_url_param()
     {
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "",
           "name" => "link name",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id,
         ];
 
         $response = $this
@@ -91,11 +132,15 @@ class CreateLinkTest extends TestCase
         //$this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "badurl",
           "name" => "link name",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id
         ];
 
         $response = $this
@@ -115,11 +160,16 @@ class CreateLinkTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "https://www.example.com",
           "name" => "",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id
+
         ];
 
         $response = $this
@@ -127,13 +177,6 @@ class CreateLinkTest extends TestCase
         ->json('POST', '/api/links', $input);
 
         $response->assertStatus(200);
-
-        $links = Link::all();
-
-        $this->assertEquals(1, $links->count());
-        $this->assertEquals($input['url'], $links->first()->url);
-        $this->assertNull($links->first()->name);
-        $this->assertEquals($input['description'], $links->first()->description);
     }
 
     /** @test */
@@ -142,11 +185,15 @@ class CreateLinkTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "https://www.example.com",
           "name" => "some name",
-          "description" => ""
+          "description" => "",
+          "group_id" => $group->id
         ];
 
         $response = $this
@@ -161,6 +208,7 @@ class CreateLinkTest extends TestCase
         $this->assertEquals($input['url'], $links->first()->url);
         $this->assertEquals($input['name'], $links->first()->name);
         $this->assertNull($links->first()->description);
+        $this->assertEquals($input['group_id'], $links->first()->group_id);
     }
 
     /** @test */
@@ -169,11 +217,15 @@ class CreateLinkTest extends TestCase
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $group = factory(Group::class)->create();
+
+        $group->contributors()->attach($user->id);
 
         $input = [
           "url" => "https://www.example.com",
           "name" => "link name",
-          "description" => "some link description"
+          "description" => "some link description",
+          "group_id" => $group->id
         ];
 
         $response = $this
@@ -182,48 +234,10 @@ class CreateLinkTest extends TestCase
 
         $response->assertStatus(200);
 
-        $links = Link::with('users')->get();
+        $links = Link::all();
 
         $this->assertEquals(1, $links->count());
-        $this->assertEquals(1, $links->first()->users->count());
-        $this->assertEquals($user->id, $links->first()->users->first()->id);
+        $this->assertEquals($user->id, $links->first()->user_id);
     }
 
-    /** @test */
-    public function link_with_a_duplicate_url_just_associates_link_to_user_does_not_do_anything_else()
-    {
-        $this->withoutExceptionHandling();
-
-        $user = factory(User::class)->create();
-
-        $link = factory(Link::class)->create([
-            "url" => "https://www.sameurl.com",
-            "name" => "orginal name",
-            "description" => "orginal description"
-        ]);
-
-        $link->users()->attach(factory(User::class)->create());
-
-        $input = [
-          "url" => "https://www.sameurl.com",
-          "name" => "changed name",
-          "description" => "changed description"
-        ];
-
-        $response = $this
-        ->actingAs($user, 'api')
-        ->json('POST', '/api/links', $input);
-
-        $response->assertStatus(200);
-
-        $links = Link::with('users')->get();
-
-        $this->assertEquals(1, $links->count());
-        $this->assertEquals($link->id, $links->first()->id);
-        $this->assertEquals($link->url, $links->first()->url);
-        $this->assertEquals($link->name, $links->first()->name);
-        $this->assertEquals($link->description, $links->first()->description);
-
-        $this->assertEquals(2, $links->first()->users()->count());
-    }
 }

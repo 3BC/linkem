@@ -20,6 +20,11 @@ class GroupController extends Controller
       return $request->user()->groups()->get();
     }
 
+    public function fullIndex()
+    {
+      return Group::all();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -35,6 +40,7 @@ class GroupController extends Controller
 
         $group->owners()->attach($request->user()->id);
         $request->user()->groups()->attach($group->id);
+        $group->contributors()->attach($request->user()->id);
 
         return $group;
     }

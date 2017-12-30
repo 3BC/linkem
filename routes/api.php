@@ -34,21 +34,23 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->group(function () {
 
-    // Room endpoints
-    Route::post('groups', 'Api\GroupController@store');
+    // Group endpoints
     Route::get('groups', 'Api\GroupController@index');
+    Route::get('groups/list', 'Api\GroupController@fullIndex');
+
+    Route::post('groups', 'Api\GroupController@store');
+
     Route::patch('groups/{group}', 'Api\GroupController@update');
     Route::delete('groups/{group}', 'Api\GroupController@destroy');
 
     // Link endpoints
-    Route::get('links/all', 'Api\LinkController@index');
+    Route::get('links', 'Api\LinkController@index');
+    Route::get('links/list', 'Api\LinkController@fullIndex');
+
+    Route::post('links', 'Api\Linkcontroller@store');
+
     Route::get('links/all/{id}', 'Api\LinkController@show');
     Route::patch('links/all/{id}', 'Api\LinkController@update');
-
-    // User Link Access
-    Route::get('links', 'Api\UserLinkController@index');
-    Route::get('links/{id}', 'Api\UserLinkController@show');
-    Route::post('links', 'Api\UserLinkController@store');
 
 
 });

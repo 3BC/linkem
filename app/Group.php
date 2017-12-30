@@ -37,6 +37,10 @@ class Group extends Model
         return $this->belongsToMany('App\User', 'group_user');
     }
 
+    public function contributors(){
+      return $this->belongsToMany('App\User', 'contributor_group');
+    }
+
     public function links()
     {
       return $this->hasMany('App\Link');

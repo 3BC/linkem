@@ -12,6 +12,25 @@ class DeleteGroupsTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
+    public function it_returns_list_of_all_groups()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+
+        $groups = factory(Group::class, 5)->create();
+
+        $response = $this
+                    ->actingAs($user, 'api')
+                    ->json('GET', '/api/groups/list');
+
+        $response->assertStatus(200);
+
+        $this->assertEquals(5, count($response->json()));
+
+    }
+
+    /** @test */
     public function it_returns_list_of_all_groups_the_user_follows()
     {
         $this->withoutExceptionHandling();

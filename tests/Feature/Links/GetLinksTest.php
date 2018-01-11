@@ -62,21 +62,42 @@ class GetLinksTest extends TestCase
         $this->assertEquals(5, count($response->json()[0]['links']));
     }
 
+    /** @test */
     function get_empty_list_of_all_links()
     {
         $this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
+        $groups = factory(Group::class, 5)->create();
 
         $response = $this
                 ->actingAs($user, 'api')
-                ->json('GET', '/api/links/all');
+                ->json('GET', '/api/links/list');
 
         $response->assertStatus(200);
 
         $this->assertEquals(0, count($response->json()));
     }
 
+    /** @test */
+    function get_empty_list_of_all_links_for_user()
+    {
+        $this->withoutExceptionHandling();
+
+        $user = factory(User::class)->create();
+        $groups = factory(Group::class, 5)->create();
+        $links = factory(Link::class, 5)->create();
+
+        $response = $this
+                ->actingAs($user, 'api')
+                ->json('GET', '/api/links/');
+
+        $response->assertStatus(200);
+
+        $this->assertEquals(0, count($response->json()));
+    }
+
+    /** @test */
     function get_single_link_by_link_id()
     {
         $this->withoutExceptionHandling();
@@ -89,12 +110,13 @@ class GetLinksTest extends TestCase
 
         $response = $this
                 ->actingAs($user, 'api')
-                ->json('GET', '/api/links/all/'.$random_link_selection);
+                ->json('GET', '/api/links/list/'.$random_link_selection);
 
         $response->assertStatus(200);
         $this->assertEquals($random_link_selection, $response->Json()['id']);
     }
 
+    /** @test */
     function get_single_link_with_invalid_link_id()
     {
         //$this->withoutExceptionHandling();
@@ -107,7 +129,7 @@ class GetLinksTest extends TestCase
 
         $response = $this
                 ->actingAs($user, 'api')
-                ->json('GET', '/api/links/all/'.$random_link_selection);
+                ->json('GET', '/api/links/list/'.$random_link_selection);
 
         $response->assertStatus(404);
 

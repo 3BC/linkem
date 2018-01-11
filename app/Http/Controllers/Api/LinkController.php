@@ -87,14 +87,40 @@ class LinkController extends Controller
     public function update(EditLink $request, $id)
     {
       $link = Link::where('id', $id)->firstOrFail();
-      $data = $request->all();
+      $group = Group::findOrFail($link->group_id);
+      $group_moderators = $group->moderators()->get();
 
-      if($data['name'] && isset($data['name'])) {$link->name = $data['name']; }
-      $link->url = $data['url'];
-      $link->description = $data['description'];
+      foreach($group_moderators as $moderator)
+      {
+        if($moderator->id == $request->user()->id)
+        {
+          $link->url = $request->url;
+          $link->name = $request->name;
+          $link->description = $request->description;
 
-      $link->save();
+          $link->save();
+          return $link;
+        }
+      }
 
-      return $link;
+      return response('User is not a moderator of this group.', 403);
+    }
+
+    public function destroy(Request $request, $id)
+    {
+      $link = Link::findOrFail($id);
+      $group = Group::findOrFail($link->group_id);
+      $group_moderators = $group->moderators()->get();
+
+      foreach($group_moderators as $moderator)
+      {
+        if($moderator->id == $request->user()->id)
+        {
+          $link->delete();
+          return;
+        }
+      }
+
+      return response('User is not a moderator of this group.', 403);
     }
 }

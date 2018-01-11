@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Link;
 use App\User;
+use App\Group;
 use Tests\TestCase;
 use Illuminate\Session\Store;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,10 +18,28 @@ class EditLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $link_id = 1;
-
         $user = factory(User::class)->create();
-        $link = factory(Link::class, 5)->create();
+
+        $groups = factory(Group::class, 1)->create();
+
+        foreach($groups as $group)
+        {
+          $user->groups()->attach($group->id);
+          $group->moderators()->attach($user->id);
+
+          for($i=0; $i<5; $i++)
+          {
+              Link::create([
+                'url' => "https://example-no-$i.com",
+                'name' => "Example $i",
+                'description' => "A description for link $i",
+                'group_id' => $group->id,
+                'user_id' => $user->id
+              ]);
+          }
+        }
+
+        $link_id = 1;
 
         $input = [
           "url" => "https://www.updatedlink.com",
@@ -30,7 +49,7 @@ class EditLinkTest extends TestCase
 
         $response = $this
         ->actingAs($user, 'api')
-        ->json('PATCH', '/api/links/all/'.$link_id, $input);
+        ->json('PATCH', '/api/links/'.$link_id, $input);
 
         $response->assertStatus(200);
 
@@ -47,10 +66,28 @@ class EditLinkTest extends TestCase
     {
       $this->withoutExceptionHandling();
 
-      $link_id = 1;
-
       $user = factory(User::class)->create();
-      $link = factory(Link::class, 5)->create();
+
+      $groups = factory(Group::class, 1)->create();
+
+      foreach($groups as $group)
+      {
+        $user->groups()->attach($group->id);
+        $group->moderators()->attach($user->id);
+
+        for($i=0; $i<5; $i++)
+        {
+            Link::create([
+              'url' => "https://example-no-$i.com",
+              'name' => "Example $i",
+              'description' => "A description for link $i",
+              'group_id' => $group->id,
+              'user_id' => $user->id
+            ]);
+        }
+      }
+
+      $link_id = 1;
 
       $input = [
         "url" => "https://www.updatedlink.com",
@@ -60,7 +97,7 @@ class EditLinkTest extends TestCase
 
       $response = $this
       ->actingAs($user, 'api')
-      ->json('PATCH', '/api/links/all/'.$link_id, $input);
+      ->json('PATCH', '/api/links/'.$link_id, $input);
 
       $response->assertStatus(200);
 
@@ -73,20 +110,39 @@ class EditLinkTest extends TestCase
     public function edit_basic_link_requires_url_param()
     {
         //$this->withoutExceptionHandling();
-        $link_id = 1;
-
         $user = factory(User::class)->create();
-        $link = factory(Link::class, 5)->create();
+
+        $groups = factory(Group::class, 1)->create();
+
+        foreach($groups as $group)
+        {
+          $user->groups()->attach($group->id);
+          $group->moderators()->attach($user->id);
+
+          for($i=0; $i<5; $i++)
+          {
+              Link::create([
+                'url' => "https://example-no-$i.com",
+                'name' => "Example $i",
+                'description' => "A description for link $i",
+                'group_id' => $group->id,
+                'user_id' => $user->id
+              ]);
+          }
+        }
+
+        $link_id = 1;
 
         $input = [
           "url" => "",
-          "name" => "link name",
-          "description" => "some link description"
+          "name" => "This is an updated link name",
+          "description" => "This is an updated link description"
         ];
 
         $response = $this
         ->actingAs($user, 'api')
-        ->json('PATCH', '/api/links/all/'.$link_id, $input);
+        ->json('PATCH', '/api/links/'.$link_id, $input);
+
 
         $response->assertStatus(422);
 
@@ -97,21 +153,39 @@ class EditLinkTest extends TestCase
     public function edit_basic_link_requires_valid_url()
     {
       //$this->withoutExceptionHandling();
+      $user = factory(User::class)->create();
+
+      $groups = factory(Group::class, 1)->create();
+
+      foreach($groups as $group)
+      {
+        $user->groups()->attach($group->id);
+        $group->moderators()->attach($user->id);
+
+        for($i=0; $i<5; $i++)
+        {
+            Link::create([
+              'url' => "example-no-$i",
+              'name' => "Example $i",
+              'description' => "A description for link $i",
+              'group_id' => $group->id,
+              'user_id' => $user->id
+            ]);
+        }
+      }
 
       $link_id = 1;
 
-      $user = factory(User::class)->create();
-      $link = factory(Link::class, 5)->create();
-
       $input = [
-        "url" => "failedurl",
-        "name" => "link name",
-        "description" => "some link description"
+        "url" => "",
+        "name" => "This is an updated link name",
+        "description" => "This is an updated link description"
       ];
 
       $response = $this
       ->actingAs($user, 'api')
-      ->json('PATCH', '/api/links/all/'.$link_id, $input);
+      ->json('PATCH', '/api/links/'.$link_id, $input);
+
 
       $response->assertStatus(422);
 
@@ -123,20 +197,39 @@ class EditLinkTest extends TestCase
     {
       //$this->withoutExceptionHandling();
 
+      $user = factory(User::class)->create();
+
+      $groups = factory(Group::class, 1)->create();
+
+      foreach($groups as $group)
+      {
+        $user->groups()->attach($group->id);
+        $group->moderators()->attach($user->id);
+
+        for($i=0; $i<5; $i++)
+        {
+            Link::create([
+              'url' => "https://example-no-$i.com",
+              'name' => "Example name",
+              'description' => "A description for link $i",
+              'group_id' => $group->id,
+              'user_id' => $user->id
+            ]);
+        }
+      }
+
       $link_id = 1;
 
-      $user = factory(User::class)->create();
-      $link = factory(Link::class, 5)->create();
-
       $input = [
-        "url" => "https://www.updatedlink.com",
+        "url" => "https://example-no-$i.co",
         "name" => "",
-        "description" => "some link description"
+        "description" => "This is an updated link description"
       ];
 
       $response = $this
       ->actingAs($user, 'api')
-      ->json('PATCH', '/api/links/all/'.$link_id, $input);
+      ->json('PATCH', '/api/links/'.$link_id, $input);
+
 
       $response->assertStatus(200);
     }
@@ -146,26 +239,41 @@ class EditLinkTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        $user = factory(User::class)->create();
+
+        $groups = factory(Group::class, 1)->create();
+
+        foreach($groups as $group)
+        {
+          $user->groups()->attach($group->id);
+          $group->moderators()->attach($user->id);
+
+          for($i=0; $i<5; $i++)
+          {
+              Link::create([
+                'url' => "https://example-no-$i.com",
+                'name' => "Example name",
+                'description' => "A description for link $i",
+                'group_id' => $group->id,
+                'user_id' => $user->id
+              ]);
+          }
+        }
+
         $link_id = 1;
 
-        $user = factory(User::class)->create();
-        $link = factory(Link::class, 5)->create();
-
         $input = [
-          "url" => "https://www.nodescription.com",
-          "name" => "some name",
+          "url" => "https://example-no-$i.co",
+          "name" => "Example name",
           "description" => ""
         ];
 
         $response = $this
         ->actingAs($user, 'api')
-        ->json('PATCH', '/api/links/all/'.$link_id, $input);
+        ->json('PATCH', '/api/links/'.$link_id, $input);
+
 
         $response->assertStatus(200);
-
-        $this->assertEquals($input['url'], $response->json()['url']);
-        $this->assertEquals($input['name'], $response->json()['name']);
-        $this->assertEquals($input['description'], $response->json()['description']);;
     }
 
 }

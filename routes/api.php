@@ -46,11 +46,14 @@ Route::middleware('auth:api')->group(function () {
     // Link endpoints
     Route::get('links', 'Api\LinkController@index');
     Route::get('links/list', 'Api\LinkController@fullIndex');
+    Route::get('links/list/{id}', 'Api\LinkController@show');
+
 
     Route::post('links', 'Api\Linkcontroller@store');
 
-    Route::get('links/all/{id}', 'Api\LinkController@show');
-    Route::patch('links/all/{id}', 'Api\LinkController@update');
+    Route::patch('links/{id}', 'Api\LinkController@update');
+
+    Route::delete('links/{id}', 'Api\LinkController@destroy');
 
 
 });

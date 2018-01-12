@@ -49,7 +49,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('links/list/{id}', 'Api\LinkController@show');
 
 
-    Route::post('links', 'Api\Linkcontroller@store');
+    Route::post('links', 'Api\LinkController@store');
 
     Route::patch('links/{id}', 'Api\LinkController@update');
 

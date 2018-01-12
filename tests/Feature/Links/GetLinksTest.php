@@ -100,13 +100,13 @@ class GetLinksTest extends TestCase
     /** @test */
     function get_single_link_by_link_id()
     {
-        $this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling();
 
         $user = factory(User::class)->create();
 
         $link = factory(Link::class, 5)->create();
 
-        $random_link_selection = rand(0,4);
+        $random_link_selection = 1;
 
         $response = $this
                 ->actingAs($user, 'api')

@@ -37,8 +37,7 @@ class LinkController extends Controller
      */
     public function show(Request $request, $id)
     {
-      $user = $request->user();
-      $link = Link::where('id', $id)->firstOrFail();
+      $link = Link::findOrFail($id);
       return $link;
     }
 

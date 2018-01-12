@@ -31,23 +31,29 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::middleware('auth:api')->group(function () {
 
-    // Room endpoints
-    Route::post('rooms', 'Api\RoomController@store');
-    Route::get('rooms', 'Api\RoomController@index');
-    Route::post('rooms', 'Api\RoomController@store');
-    Route::patch('rooms/{room}', 'Api\RoomController@update');
+    // Group endpoints
+    Route::get('groups', 'Api\GroupController@index');
+    Route::get('groups/list', 'Api\GroupController@fullIndex');
+
+    Route::post('groups', 'Api\GroupController@store');
+
+    Route::patch('groups/{group}', 'Api\GroupController@update');
+    Route::delete('groups/{group}', 'Api\GroupController@destroy');
 
     // Link endpoints
-    Route::get('links/all', 'Api\LinkController@index');
-    Route::get('links/all/{id}', 'Api\LinkController@show');
-    Route::patch('links/all/{id}', 'Api\LinkController@update');
+    Route::get('links', 'Api\LinkController@index');
+    Route::get('links/list', 'Api\LinkController@fullIndex');
+    Route::get('links/list/{id}', 'Api\LinkController@show');
 
-    // User Link Access
-    Route::get('links', 'Api\UserLinkController@index');
-    Route::get('links/{id}', 'Api\UserLinkController@show');
-    Route::post('links', 'Api\UserLinkController@store');
+
+    Route::post('links', 'Api\LinkController@store');
+
+    Route::patch('links/{id}', 'Api\LinkController@update');
+
+    Route::delete('links/{id}', 'Api\LinkController@destroy');
 
 
 });

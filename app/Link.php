@@ -11,10 +11,15 @@ class Link extends Model
      *
      * @var array
      */
-    protected $fillable = ['url', 'name', 'description'];
+    protected $fillable = ['url', 'name', 'description', 'group_id', 'user_id'];
 
-    public function users()
+    public function group()
     {
-        return $this->belongsToMany('App\User');
+        return $this->hasOne('App\Group');
+    }
+
+    public function user()
+    {
+      return $this->hasOne('App\User');
     }
 }

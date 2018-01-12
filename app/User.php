@@ -28,6 +28,11 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function groups()
+    {
+        return $this->belongsToMany('App\Group');
+    }
+
     public function links()
     {
         return $this->belongsToMany('App\Link');
